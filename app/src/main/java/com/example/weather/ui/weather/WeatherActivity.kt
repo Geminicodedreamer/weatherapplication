@@ -3,6 +3,7 @@ package com.example.weather.ui.weather
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.app.ActivityCompat
+import android.Manifest
+import android.location.Location
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +31,8 @@ import com.example.weather.ui.weather.placemanage.PlaceManageAdapter
 import com.example.weather.ui.weather.placemanage.PlaceManageViewModel
 import com.example.weather.ui.weather.weathershow.HourlyAdapter
 import com.example.weather.ui.weather.weathershow.WeatherShowViewModel
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.FusedLocationProviderClient
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -63,6 +69,14 @@ class WeatherActivity : AppCompatActivity() {
 
     private lateinit var addBtn: Button
 
+    private lateinit var posBtn : Button
+
+    // 定义一个用于位置权限请求的常量
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1001
+
+    // 定义一个 FusedLocationProviderClient 实例
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private lateinit var placeManageRecyclerView: RecyclerView
 
     private lateinit var placeManageAdapter: PlaceManageAdapter
@@ -95,6 +109,14 @@ class WeatherActivity : AppCompatActivity() {
         searchPlaceEntrance = findViewById(R.id.searchPlaceEntrance)
         addBtn = findViewById(R.id.addBtn)
         placeManageRecyclerView = findViewById(R.id.placeManageRecyclerView)
+        posBtn = findViewById(R.id.posBtn)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        posBtn.setOnClickListener {
+            // 请求位置更新
+            requestLocation()
+        }
 
         //启动PlaceSearchActivity
         searchPlaceEntrance.setOnClickListener {
@@ -188,6 +210,67 @@ class WeatherActivity : AppCompatActivity() {
 
             override fun onDrawerStateChanged(newState: Int) {}
         })
+    }
+
+    private fun requestLocation() {
+        // 检查应用是否有权限访问设备的位置
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // 如果权限未被授予，则请求位置权限
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+            return
+        }
+
+        // 一旦权限被授予，请求设备的最后已知位置
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                location?.let {
+                    // 成功获取位置，基于此位置更新天气
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    // 基于新位置坐标更新天气
+                    updateWeatherWithLocation(latitude, longitude)
+                } ?: run {
+                    // 如果最后已知位置为空，则请求位置更新
+                    Toast.makeText(
+                        this@WeatherActivity,
+                        "无法获取当前位置",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+    }
+
+    private fun updateWeatherWithLocation(latitude: Double, longitude: Double) {
+        weatherViewModel.refreshWeather(latitude.toString(), longitude.toString())
+    }
+
+    // 处理位置权限请求的结果
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 权限被授予，请求位置更新
+                requestLocation()
+            } else {
+                Toast.makeText(
+                    this@WeatherActivity,
+                    "位置权限被拒绝",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
