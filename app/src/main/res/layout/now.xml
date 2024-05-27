@@ -49,4 +49,17 @@
         android:layout_marginBottom="16dp"
         android:text="定位" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/schedule"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="16dp"
+        android:text="日程表" />
+
+
+
+
 </RelativeLayout>
