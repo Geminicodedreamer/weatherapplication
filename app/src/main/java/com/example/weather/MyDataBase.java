@@ -1,6 +1,6 @@
 package com.example.weather;
 
-public class SchDataBase {
+public class MyDataBase {
 
     private Integer _id;
     private String title;
@@ -9,10 +9,10 @@ public class SchDataBase {
     private String time;
     private String description;
 
-    public SchDataBase() {
+    public MyDataBase() {
     }
 
-    public SchDataBase(Integer _id, String title, String place, String date, String time, String description) {
+    public MyDataBase(Integer _id, String title, String place, String date, String time, String description) {
         this._id = _id;
         this.title = title;
         this.place = place;

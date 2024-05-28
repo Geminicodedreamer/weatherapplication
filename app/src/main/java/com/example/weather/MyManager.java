@@ -10,17 +10,17 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SchManager {
+public class MyManager {
     private static SQLiteDatabase database;
 
     public static void initDB(Context context){
         //初始化数据库信息
-        SchHelper helper = new SchHelper(context);
+        MyHelper helper = new MyHelper(context);
         database = helper.getWritableDatabase();
     }
 
-    public static List<SchDataBase> getAllSchInfo() {
-        List<SchDataBase> resultList = new ArrayList<>();
+    public static List<MyDataBase> getAllSchInfo() {
+        List<MyDataBase> resultList = new ArrayList<>();
 
         // 执行查询
         Cursor cursor = database.query("schInfo", null, null, null, null, null, null);
@@ -35,7 +35,7 @@ public class SchManager {
                 @SuppressLint("Range") String time = cursor.getString(cursor.getColumnIndex("time"));
                 @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
 
-                SchDataBase info = new SchDataBase(id, title, place, date, time, description);
+                MyDataBase info = new MyDataBase(id, title, place, date, time, description);
                 resultList.add(info);
             } while (cursor.moveToNext());
 
@@ -46,7 +46,7 @@ public class SchManager {
     }
 
 
-    public static long addSchInfo(SchDataBase info){
+    public static long addSchInfo(MyDataBase info){
         ContentValues values = new ContentValues();
         values.put("title",info.getTitle());
         values.put("place",info.getPlace());
@@ -56,17 +56,13 @@ public class SchManager {
         return database.insert("schInfo",null,values);
     }
 
-    public static List<SchDataBase> querySchInfoByDate(String date) {
-        List<SchDataBase> resultList = new ArrayList<>();
+    public static List<MyDataBase> querySchInfoByDate(String date) {
+        List<MyDataBase> resultList = new ArrayList<>();
 
-        // 查询条件
         String selection = "date = ?";
         String[] selectionArgs = { date };
-
-        // 执行查询
         Cursor cursor = database.query("schInfo", null, selection, selectionArgs, null, null, null);
 
-        // 遍历查询结果
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 @SuppressLint("Range") Integer _id = cursor.getInt(cursor.getColumnIndex("_id"));
@@ -75,7 +71,7 @@ public class SchManager {
                 @SuppressLint("Range") String time = cursor.getString(cursor.getColumnIndex("time"));
                 @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
 
-                SchDataBase info = new SchDataBase(_id,title, place, date, time, description);
+                MyDataBase info = new MyDataBase(_id,title, place, date, time, description);
                 resultList.add(info);
             } while (cursor.moveToNext());
 
@@ -89,7 +85,7 @@ public class SchManager {
         return database.delete("schInfo","date=?",new String[]{date});
     }
 
-    public static void updateSchInfo(SchDataBase info) {
+    public static void updateSchInfo(MyDataBase info) {
         ContentValues values = new ContentValues();
         values.put("title", info.getTitle());
         values.put("place", info.getPlace());

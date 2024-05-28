@@ -10,13 +10,13 @@ class WeatherApplication: Application() {
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
 
-        const val TOKEN = "vrZU1uW5u6BVMxg9"
+        const val TOKEN = "YdLmUTVCa5uJtca4"
     }
 
     override fun onCreate() {
         super.onCreate()
         context = applicationContext
-        SchManager.initDB(this)
+        MyManager.initDB(this)
     }
 
 

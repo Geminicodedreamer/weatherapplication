@@ -18,10 +18,10 @@ import java.util.List;
 
 public class ScheduleAdapter extends BaseAdapter implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
 
-    private List<SchDataBase> mScheduleList ;
+    private List<MyDataBase> mScheduleList ;
     private Context mContext;
 
-    public ScheduleAdapter(List<SchDataBase> mScheduleList, Context mContext) {
+    public ScheduleAdapter(List<MyDataBase> mScheduleList, Context mContext) {
         this.mScheduleList = mScheduleList;
         this.mContext = mContext;
     }
@@ -53,7 +53,7 @@ public class ScheduleAdapter extends BaseAdapter implements AdapterView.OnItemCl
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
-        SchDataBase info = mScheduleList.get(position);
+        MyDataBase info = mScheduleList.get(position);
         holder.tv_schedule.setText(info.toString());
 
         return convertView;
@@ -62,7 +62,7 @@ public class ScheduleAdapter extends BaseAdapter implements AdapterView.OnItemCl
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        final SchDataBase SchDataBase = mScheduleList.get(position);
+        final MyDataBase SchDataBase = mScheduleList.get(position);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -88,15 +88,14 @@ public class ScheduleAdapter extends BaseAdapter implements AdapterView.OnItemCl
                 String place = editTextPlace.getText().toString().trim();
                 String date = SchDataBase.getDate();
 
-                // 更新数据库中的信息
                 SchDataBase.setTitle(title);
                 SchDataBase.setDescription(description);
                 SchDataBase.setTime(time);
                 SchDataBase.setPlace(place);
 
-                SchManager.updateSchInfo(SchDataBase);
-                mScheduleList = SchManager.querySchInfoByDate(date);
-                // 刷新列表
+                MyManager.updateSchInfo(SchDataBase);
+                mScheduleList = MyManager.querySchInfoByDate(date);
+
                 notifyDataSetChanged();
             }
         });
@@ -121,15 +120,15 @@ public class ScheduleAdapter extends BaseAdapter implements AdapterView.OnItemCl
             public void onClick(DialogInterface dialog, int which) {
                 // 添加删除数据库中数据的操作
                 String date = mScheduleList.get(position).getDate();
-                List<SchDataBase> infoList = SchManager.querySchInfoByDate(date);
-                SchManager.deleteSchInfoBydate(date);
+                List<MyDataBase> infoList = MyManager.querySchInfoByDate(date);
+                MyManager.deleteSchInfoBydate(date);
                 infoList.remove(position);
                 for(int i = 0;i < infoList.size();i ++){
-                    SchManager.addSchInfo(infoList.get(i));
+                    MyManager.addSchInfo(infoList.get(i));
                 }
                 // 用户点击确定，执行删除操作
                 mScheduleList.remove(position);
-                mScheduleList = SchManager.querySchInfoByDate(date);
+                mScheduleList = MyManager.querySchInfoByDate(date);
                 notifyDataSetChanged();
             }
         });
@@ -146,7 +145,7 @@ public class ScheduleAdapter extends BaseAdapter implements AdapterView.OnItemCl
     }
 
 
-    public void setScheduleList(List<SchDataBase> newList) {
+    public void setScheduleList(List<MyDataBase> newList) {
         mScheduleList.clear();
         mScheduleList.addAll(newList);
     }

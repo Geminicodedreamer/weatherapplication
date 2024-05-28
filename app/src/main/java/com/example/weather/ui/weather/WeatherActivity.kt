@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.weather.AudioPlayActivity
 import com.example.weather.R
 import com.example.weather.ScheduleActivity
 import com.example.weather.customview.RealtimeWeatherView
@@ -72,6 +73,7 @@ class WeatherActivity : AppCompatActivity() {
 
     private lateinit var posBtn : Button
     private lateinit var schBtn : Button
+    private lateinit var musicBtn : Button
 
     // 定义一个用于位置权限请求的常量
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
@@ -112,7 +114,8 @@ class WeatherActivity : AppCompatActivity() {
         addBtn = findViewById(R.id.addBtn)
         placeManageRecyclerView = findViewById(R.id.placeManageRecyclerView)
         posBtn = findViewById(R.id.posBtn)
-        schBtn = findViewById(R.id.schedule);
+        schBtn = findViewById(R.id.schedule)
+        musicBtn = findViewById(R.id.music)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -123,6 +126,9 @@ class WeatherActivity : AppCompatActivity() {
 
         schBtn.setOnClickListener {
             startActivity(Intent(this,ScheduleActivity::class.java))
+        }
+        musicBtn.setOnClickListener {
+            startActivity(Intent(this,AudioPlayActivity::class.java))
         }
 
         //启动PlaceSearchActivity

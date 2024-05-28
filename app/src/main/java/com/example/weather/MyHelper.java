@@ -4,9 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class SchHelper extends SQLiteOpenHelper {
+public class MyHelper extends SQLiteOpenHelper {
 
-    public SchHelper( Context context) {
+    public MyHelper(Context context) {
         super(context, "SchInfo.db", null, 1);
     }
 

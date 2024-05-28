@@ -59,6 +59,15 @@
         android:layout_marginBottom="16dp"
         android:text="日程表" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/music"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="音乐播放器" />
+
 
 
 
