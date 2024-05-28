@@ -52,5 +52,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation "androidx.room:room-runtime:2.5.1"
+    implementation 'com.android.support:support-annotations:28.0.0' // 根据你的 support 库版本进行修改
     kapt "androidx.room:room-compiler:2.5.1"
 }

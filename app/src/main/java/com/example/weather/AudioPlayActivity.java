@@ -1,5 +1,7 @@
 package com.example.weather;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -12,9 +14,13 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,7 +46,7 @@ public class AudioPlayActivity extends AppCompatActivity implements Recycler.OnI
             MediaStore.Audio.Media.DATA};
     private AudioAdapter mAdapter;
     private MediaPlayer mMediaPlayer = new MediaPlayer();
-    private static final int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 103;
+
     private AlertDialog permissionDialog;
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 102;
     private Timer mTimer = new Timer();
@@ -49,7 +55,7 @@ public class AudioPlayActivity extends AppCompatActivity implements Recycler.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_play);
-
+        checkAndRequestAudioPermission();
         rv_audio = findViewById(R.id.rv_audio);
         iv_pause = findViewById(R.id.iv_pause);
         iv_prev = findViewById(R.id.iv_prev);
@@ -70,6 +76,35 @@ public class AudioPlayActivity extends AppCompatActivity implements Recycler.OnI
         });
     }
 
+    // 检查并请求音频权限
+    private void checkAndRequestAudioPermission() {
+        // 检查是否已经授予 READ_MEDIA_AUDIO 权限
+        int audioPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO);
+
+        // 如果未授予该权限，则请求权限
+        if (audioPermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_AUDIO}, AUDIO_PERMISSION_REQUEST_CODE);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @android.support.annotation.NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == AUDIO_PERMISSION_REQUEST_CODE) {
+            // 检查用户是否授予了请求的权限
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 用户授予权限，可以开始使用相关功能
+                Toast.makeText(this, "已授予音频文件权限", Toast.LENGTH_SHORT).show();
+                // 在这里可以执行读取音频文件的操作
+            } else {
+                // 用户拒绝了权限请求，可能需要提供一些解释或处理
+                Toast.makeText(this, "已拒绝授予音频文件权限", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
 
 
     private void playPreviousAudio() {
