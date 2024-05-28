@@ -89,7 +89,7 @@ public class AudioPlayActivity extends AppCompatActivity implements Recycler.OnI
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @android.support.annotation.NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == AUDIO_PERMISSION_REQUEST_CODE) {
@@ -199,7 +199,6 @@ public class AudioPlayActivity extends AppCompatActivity implements Recycler.OnI
                     i--;
                     Log.i(TAG,"hello");
                     continue;
-
                 }
                 mAudioList.add(audio);
             }
